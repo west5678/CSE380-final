@@ -15,8 +15,13 @@ void write_cout(const double &x, const double t){
 }
 
 int main(){
-	double x = 1.0;
+	double time_steps[] = {0.512, 0.256, 0.128, 0.064, 0.032, 0.016};
+	std::vector<double> dt_list (time_steps, time_steps + sizeof(time_steps) / sizeof(double)); 
 	typedef euler<double> stepper_type;
-	integrate_const(stepper_type(), rhs, x, 0.0, 10.24, 0.16, write_cout);
+	for (auto dt : dt_list){
+		double x = 1.0;
+		integrate_const(stepper_type(), rhs, x, 0.0, 1.024, dt);
+		std::cout << dt << "\t" << x << std::endl;
+	}
 	return 0;
 }
