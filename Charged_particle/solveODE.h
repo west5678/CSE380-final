@@ -8,5 +8,5 @@
 #include <grvy.h>
 
 typedef std::vector<double> state_type;
+void parse(char*, double*&, double&, double*&, int&, std::string&);
 void trajectory(const state_type&, state_type&, const double);
-void parse(char*, state_type&, double, std::vector<double>&, int&, std::string&);
