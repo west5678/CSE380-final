@@ -1,0 +1,14 @@
+# Problem=1
+# Solver=RK4
+# n_sizes=7
+# dt=0.064 0.032 0.016 0.008 0.004 0.002 0.001
+# dim=6
+# x0=0.0 0.0 0.0 20.0 0.0 2.0
+# t1=4.096
+# Verification=true
+# Debug=true
+
+# [GRVY Registered Variable Default Values]
+# Debug=0
+# Verification=0
+

@@ -6,7 +6,7 @@ using namespace GRVY;
 //Input parsing for solving system of ODE
 
 void parse(char* filename, double* x, double& t1, double* dt_list, 
-		int& problem_type, string& solver, bool& verification){
+		int& problem_type, string& solver, bool& verification, bool& debug){
 	GRVY_Input_Class iparse;
 
 	if (! iparse.Open(filename))
@@ -17,6 +17,7 @@ void parse(char* filename, double* x, double& t1, double* dt_list,
 	iparse.Read_Var("Solver", &solver);
 	iparse.Read_Var("t1", &t1);
 	iparse.Read_Var("Verification", &verification, false);
+	iparse.Read_Var("Debug", &debug, false);
 	
 	//Read vectors
 	int n_sizes;
@@ -26,4 +27,6 @@ void parse(char* filename, double* x, double& t1, double* dt_list,
 	int dim;
 	iparse.Read_Var("dim", &dim);
 	iparse.Read_Var_Vec("x0", x, dim);
+
+	if (debug)	iparse.Fdump("# ", "run.log");
 }

@@ -19,3 +19,6 @@ t1=4.096
 
 # Verification mode
 Verification=true
+
+#debug mode
+Debug=true

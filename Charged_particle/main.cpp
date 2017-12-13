@@ -3,9 +3,14 @@
 using namespace boost::numeric::odeint;
 std::ofstream out;
 
-void observer( const state_type &x, const double t){
+void observer_standard( const state_type &x, const double t ){
 	out << t << "\t" << x[0] << "\t" << x[1] << "\t" << x[2] << std::endl;
 }
+
+void observer_debug( const state_type &x, const double t ){
+	out << t << "\t" << x[0] << "\t" << x[1] << "\t" << x[2] << "\t" << x[3] << "\t" << x[4] << "\t" << x[5] << std::endl;
+}
+
 
 /*void solve(const std::string solver, const std::vector<double> time_steps, const double* x0, 
 		state_type x, double t1){
@@ -26,9 +31,10 @@ int main(int argc, char** argv){
 	std::string solver;
 	double t1;
 	bool verification;
+	bool debug;
 	
 	//input parsing with GRVY
-	parse(argv[1], x0, t1, dt_list, problem_type, solver, verification);
+	parse(argv[1], x0, t1, dt_list, problem_type, solver, verification, debug);
 	
 	//transfer double [] to vector<double>
 	std::vector<double> time_steps (dt_list, dt_list + sizeof(dt_list)/sizeof(double));
@@ -42,6 +48,17 @@ int main(int argc, char** argv){
 	else if (problem_type == 0)
 	{
 		problem = &testEquation;
+	}
+
+	//standard/debug
+	void (*observer)(const state_type&, const double);
+	if (debug)
+	{
+		observer = observer_debug;
+	}
+	else
+	{
+		observer = observer_standard;
 	}
 	
 	//ODE solver
