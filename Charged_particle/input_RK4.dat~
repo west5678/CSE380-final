@@ -1,0 +1,21 @@
+# problem number: 0 for simple ODE, 1 for Charged particle in a vertical field
+Problem=1
+
+# solution methods: explicit_euler for self implemented euler, euler for odeint implementation of expliciti euler, RK5 for 4th order Runge-Kutta, RK2 for explicit Runge-Kutta (2,3) (single step)
+Solver='RK8'
+
+# Number of step sizes
+n_sizes=7
+# Step sizes
+dt='0.064 0.032 0.016 0.008 0.004 0.002 0.001'
+
+# Dimension of the system
+dim=6
+# Initial condition
+x0='0.0 0.0 0.0 20.0 0.0 2.0'
+
+# Upper bound of integration
+t1=4.096
+
+# Verification mode
+# Standard/debug mode

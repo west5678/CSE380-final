@@ -1,7 +1,9 @@
 #include <iostream>
+#include <fstream>
 #include <math.h>
 #include <boost/numeric/odeint.hpp>
 #include <vector>
+#include <string>
 
 #include <cstdio>
 #include <cstdlib>
