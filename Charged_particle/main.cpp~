@@ -21,7 +21,7 @@ int main(int argc, char** argv){
 	
 	//ODE solver
 	if (solver == "RK4"){
-		runge_kutta4< state_type > stepper;
+		runge_kutta4< state_type > solver_type;
 		for (auto dt : time_steps){
 			integrate_const(stepper, trajectory, x, 0.0, t1, dt);
 			for (std::vector<double>::const_iterator i = x.begin(); 
@@ -31,9 +31,9 @@ int main(int argc, char** argv){
 			std::cout << std::endl;
 		}
 	}else if (solver == "RK5"){
-		runge_kutta_dopri5< state_type > stepper;
+		runge_kutta_dopri5< state_type > solver_type;
 	}else if (solver == "RK8"){
-		runge_kutta_fehlberg78< state_type > stepper;
+		runge_kutta_fehlberg78< state_type > solver_type;
 	}else{
 		exit(1);
 	}

@@ -13,3 +13,13 @@ $(EXEC) : $(OBJ)
 %.o : %.cpp
 	$(CC) $(CXXFLAGS) -c $<
 %.o : solveODE.h
+
+.PHONY: clobber clean neat echo
+clobber: clean
+	$(RM) $(EXEC)
+clean: neat
+	$(RM) $(OBJ)
+neat:
+	$(RM) *~ .*~
+echo:
+	@echo $(OBJ)
