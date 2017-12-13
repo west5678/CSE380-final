@@ -12,4 +12,4 @@
 typedef std::vector<double> state_type;
 void parse(char*, double*, double&, double*, int&, std::string&, bool&, bool&);
 void trajectory(const state_type&, state_type&, const double);
-void testEquation(const state_type&, state_type&, const double);
+

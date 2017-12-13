@@ -12,7 +12,7 @@ $(EXEC) : $(OBJ)
 	$(CC) $(LDFLAGS) $(LDLIBS) -o $@ $^
 %.o : %.cpp
 	$(CC) $(CXXFLAGS) -c $<
-main.o problems.o parse.o: solveODE.h
+%.o : solveODE.h
 # Useful phony targets
 .PHONY: clobber clean neat echo
 clobber: clean

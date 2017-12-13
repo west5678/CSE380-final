@@ -1,6 +1,7 @@
 #include "solveODE.h"
 
 using namespace boost::numeric::odeint;
+
 std::ofstream out;
 
 void observer_standard( const state_type &x, const double t ){
@@ -11,11 +12,31 @@ void observer_debug( const state_type &x, const double t ){
 	out << t << "\t" << x[0] << "\t" << x[1] << "\t" << x[2] << "\t" << x[3] << "\t" << x[4] << "\t" << x[5] << std::endl;
 }
 
+void computeError( state_type x, state_type x_exact, double dt ){
+	double err = sqrt(pow(x[0]-x_exact[0], 2.0) + pow(x[1]-x_exact[1], 2.0)
+			+ pow(x[2]-x_exact[2], 2.0));
+	std::cout << dt << ", " << err << std::endl;
+}
 
 /*void solve(const std::string solver, const std::vector<double> time_steps, const double* x0, 
 		state_type x, double t1){
 	
 }*/
+
+void solve(string solver, state_type& x, double t1, double dt){
+	if (solver == "RK4"){
+		runge_kutta4< state_type > stepper;
+		integrate_const( stepper, trajectory, x, 0.0, t1, dt, observer );
+	}
+	else if (solver == "RK5"){
+		runge_kutta_dopri5< state_type > stepper;
+		integrate_const( stepper, trajectory, x, 0.0, t1, dt, observer );
+	}
+	else if (solver == "RK8"){
+		kutta_fehlberg78< state_type > stepper;
+		integrate_const( stepper, trajectory, x, 0.0, t1, dt, observer );
+	}
+}
 
 int main(int argc, char** argv){
 	//initialization
@@ -39,16 +60,6 @@ int main(int argc, char** argv){
 	//transfer double [] to vector<double>
 	std::vector<double> time_steps (dt_list, dt_list + sizeof(dt_list)/sizeof(double));
 	std::vector<double> x;	
-	//ODE system
-	void (*problem)(const state_type&, state_type&, const double);
-	if (problem_type == 1)
-	{
-		problem = &trajectory;
-	}
-	else if (problem_type == 0)
-	{
-		problem = &testEquation;
-	}
 
 	//standard/debug
 	void (*observer)(const state_type&, const double);
@@ -60,6 +71,19 @@ int main(int argc, char** argv){
 	{
 		observer = observer_standard;
 	}
+
+	//Verification
+	state_type x_exact;
+	if (verification){
+		std::cout << "Verification On" << std::endl;
+		//compute "exact" solution with highest order
+		runge_kutta_fehlberg78< state_type > stepper;
+		state_type temp_exact (x0, x0 + sizeof(x0)/sizeof(double));
+		x_exact = temp_exact;
+		integrate_const(stepper, trajectory, x_exact, 0.0, t1, 1e-5);
+		std::cout << x_exact[0] << "\t" << x_exact[1] << "\t" << x_exact[2] << std::endl;
+	}
+	
 	
 	//ODE solver
 	//solve(solver, time_steps, x0, x, t1);
@@ -76,7 +100,8 @@ int main(int argc, char** argv){
 			x = temp;
 			integrate_const(stepper, trajectory, x, 0.0, t1, dt, observer);
 			out.close();
-			std::cout << filename << std::endl;
+			if (verification)
+				computeError(x, x_exact, dt);
 		}
 	}
 	else if (solver == "RK5")
@@ -92,7 +117,8 @@ int main(int argc, char** argv){
 			x = temp;
 			integrate_const(stepper, trajectory, x, 0.0, t1, dt, observer);
 			out.close();
-			std::cout << filename << std::endl;
+			if (verification)
+				computeError(x, x_exact, dt);
 		}
 	}
 	else if (solver == "RK8")
@@ -108,32 +134,12 @@ int main(int argc, char** argv){
 			x = temp;
 			integrate_const(stepper, trajectory, x, 0.0, t1, dt, observer);
 			out.close();
-			std::cout << filename << std::endl;
+			if (verification)
+				computeError(x, x_exact, dt);
 		}
 	}
-
 	else{
 		exit(1);
 	}
-
-	
-	//Verification
-	if (verification){
-		std::cout << "Verification On" << std::endl;
-		//compute "exact" solution with highest order
-		runge_kutta_fehlberg78< state_type > stepper;
-		state_type x_exact (x0, x0 + sizeof(x0)/sizeof(double));
-		integrate_const(stepper, trajectory, x_exact, 0.0, t1, 1e-5);
-		std::cout << x_exact[0] << "\t" << x_exact[1] << "\t" << x_exact[2] << std::endl;
-		std::vector<double> error_list;
-		std::ofstream error_out("error.out");
-		for (int i=0; i<n_sizes; i++){
-			double err = sqrt(pow(x[0]-x_exact[1], 2.0) + pow(x[1]-x_exact[1], 2.0)
-					+ pow(x[2]-x_exact[2], 2.0));
-			error_out << err << " ";
-		}
-		error_out.close();
-	}
-
 	return 0;
 }
