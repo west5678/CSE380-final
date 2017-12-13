@@ -13,7 +13,7 @@ $(EXEC) : $(OBJ)
 %.o : %.cpp
 	$(CC) $(CXXFLAGS) -c $<
 %.o : solveODE.h
-
+# Useful phony targets
 .PHONY: clobber clean neat echo
 clobber: clean
 	$(RM) $(EXEC)
