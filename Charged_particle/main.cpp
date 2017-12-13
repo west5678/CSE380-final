@@ -27,17 +27,34 @@ int main(int argc, char** argv){
 	std::vector<double> time_steps (dt_list, dt_list + sizeof(dt_list)/sizeof(double));
 	
 	//ODE solver
-	if (solver == "RK4"){
+	if (solver == "RK4")
+	{
 		runge_kutta4< state_type > stepper;
-		for (auto dt : time_steps){
+		for (auto dt : time_steps)
+		{
 			state_type x (x0, x0 + sizeof(x0)/sizeof(double));
 			integrate_const(stepper, trajectory, x, 0.0, t1, dt, observer);
 		}
-	}else if (solver == "RK5"){
+	}
+	else if (solver == "RK5")
+	{
 		runge_kutta_dopri5< state_type > stepper;
-	}else if (solver == "RK8"){
+		for (auto dt : time_steps)
+		{
+			state_type x (x0, x0 + sizeof(x0)/sizeof(double));
+			integrate_const(stepper, trajectory, x, 0.0, t1, dt, observer);
+		}
+	}
+	else if (solver == "RK8")
+	{
 		runge_kutta_fehlberg78< state_type > stepper;
-	}else{
+		for (auto dt : time_steps)
+		{
+			state_type x (x0, x0 + sizeof(x0)/sizeof(double));
+			integrate_const(stepper, trajectory, x, 0.0, t1, dt, observer);
+		}
+	}
+	else{
 		exit(1);
 	}
 	
