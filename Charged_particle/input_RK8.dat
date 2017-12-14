@@ -7,7 +7,7 @@ Solver='RK8'
 # Number of step sizes
 n_sizes=7
 # Step sizes
-dt='0.064 0.032 0.016 0.008 0.004 0.002 0.001'
+dt='1.024 0.512 0.256 0.128 0.064 0.032 0.016 0.008'
 
 # Dimension of the system
 dim=6

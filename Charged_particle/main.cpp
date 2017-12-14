@@ -5,6 +5,8 @@ using namespace boost::numeric::odeint;
 std::ofstream out;
 GRVY::GRVY_Timer_Class gt;
 
+void (*problem)(const state_type&, state_type&, const double);
+
 void (*observer)(const state_type&, const double);
 
 void observer_timer(const state_type& x, const double t){
@@ -15,11 +17,6 @@ void computeError( state_type x, state_type x_exact, double dt ){
 			+ pow(x[2]-x_exact[2], 2.0));
 	std::cout << dt << ", " << err << std::endl;
 }
-/*void solve(const std::string solver, const std::vector<double> time_steps, const double* x0, 
-		state_type x, double t1){
-	
-}*/
-
 
 
 int main(int argc, char** argv){
@@ -48,6 +45,16 @@ int main(int argc, char** argv){
 	std::vector<double> time_steps (dt_list, dt_list + sizeof(dt_list)/sizeof(double));
 	std::vector<double> x;	
 
+	//problem type
+	if (problem_type == 0)
+	{
+		problem = testEquation;
+	}
+	else if (problem_type == 1)
+	{
+		problem = trajectory;
+	}
+	
 	//standard/debug
 	if (debug)
 	{
@@ -69,7 +76,7 @@ int main(int argc, char** argv){
 		runge_kutta_fehlberg78< state_type > stepper;
 		state_type temp_exact (x0, x0 + sizeof(x0)/sizeof(double));
 		x_exact = temp_exact;
-		integrate_const(stepper, trajectory, x_exact, 0.0, t1, 1e-5);
+		integrate_const(stepper, problem, x_exact, 0.0, t1, 1e-5);
 		std::cout << x_exact[0] << "\t" << x_exact[1] << "\t" << x_exact[2] << std::endl;
 	}
 	

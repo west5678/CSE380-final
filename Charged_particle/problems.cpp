@@ -1,13 +1,16 @@
 #include "solveODE.h"
 
 //Simple ODE (test problem for absolute stability): x'(t) = x(t), x(0) = 1
+
 void testEquation(const state_type& x, state_type &dxdt, const double t){
 	dxdt[0] = -x[0];
 }
 
-const double omega = 5, tau = 5;
 
 //Charged particle
+
+const double omega = 5, tau = 5;
+
 void trajectory(const state_type &x, state_type &dxdt, const double t){
 	dxdt[0] = x[3];
 	dxdt[1] = x[4];
