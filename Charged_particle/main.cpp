@@ -7,12 +7,14 @@ GRVY::GRVY_Timer_Class gt;
 
 void (*observer)(const state_type&, const double);
 
+void observer_timer(const state_type& x, const double t){
+}
+//compute error for verification
 void computeError( state_type x, state_type x_exact, double dt ){
 	double err = sqrt(pow(x[0]-x_exact[0], 2.0) + pow(x[1]-x_exact[1], 2.0)
 			+ pow(x[2]-x_exact[2], 2.0));
 	std::cout << dt << ", " << err << std::endl;
 }
-
 /*void solve(const std::string solver, const std::vector<double> time_steps, const double* x0, 
 		state_type x, double t1){
 	
@@ -56,6 +58,9 @@ int main(int argc, char** argv){
 		observer = observer_standard;
 	}
 
+	if (n_sizes == 1)
+		observer = observer_timer;
+
 	//Verification
 	state_type x_exact;
 	if (verification){
@@ -70,8 +75,6 @@ int main(int argc, char** argv){
 	
 	
 	//ODE solver
-	//solve(solver, time_steps, x0, x, t1);
-
 	for (auto dt : time_steps){
 		std::string filename = "data/" + solver + "_" + std::to_string(int(dt*1000)) + ".dat";
 		out.open(filename, std::fstream::out);
@@ -86,61 +89,5 @@ int main(int argc, char** argv){
 	gt.Finalize();
 	gt.Summarize();
 	gt.Reset();
-	/*
-	if (solver == "RK4")
-	{
-		runge_kutta4< state_type > stepper;
-		for (auto dt : time_steps)
-		{
-			std::string filename = "data/" + solver + "_" + std::to_string(int(dt*1000)) + ".dat";
-			out.open(filename, std::fstream::out);
-			if (!out.is_open())
-				exit(1);
-			std::vector<double> temp (x0, x0+sizeof(x0)/sizeof(double));
-			x = temp;
-			integrate_const(stepper, trajectory, x, 0.0, t1, dt, observer);
-			out.close();
-			if (verification)
-				computeError(x, x_exact, dt);
-		}
-	}
-	else if (solver == "RK5")
-	{
-		runge_kutta_dopri5< state_type > stepper;
-		for (auto dt : time_steps)
-		{
-			std::string filename = "data/" + solver + "_" + std::to_string(int(dt*1000)) + ".dat";
-			out.open(filename, std::fstream::out);
-			if (!out.is_open())
-				exit(1);
-			std::vector<double> temp (x0, x0+sizeof(x0)/sizeof(double));
-			x = temp;
-			integrate_const(stepper, trajectory, x, 0.0, t1, dt, observer);
-			out.close();
-			if (verification)
-				computeError(x, x_exact, dt);
-		}
-	}
-	else if (solver == "RK8")
-	{
-		runge_kutta_fehlberg78< state_type > stepper;
-		for (auto dt : time_steps)
-		{			
-			std::string filename = "data/" + solver + "_" + std::to_string(int(dt*1000)) + ".dat";
-			out.open(filename, std::fstream::out);
-			if (!out.is_open())
-				exit(1);
-			std::vector<double> temp (x0, x0+sizeof(x0)/sizeof(double));
-			x = temp;
-			integrate_const(stepper, trajectory, x, 0.0, t1, dt, observer);
-			out.close();
-			if (verification)
-				computeError(x, x_exact, dt);
-		}
-	}
-	else{
-		exit(1);
-	}
-	*/
 	return 0;
 }
