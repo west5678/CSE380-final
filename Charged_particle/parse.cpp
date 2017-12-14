@@ -5,8 +5,13 @@ using namespace GRVY;
 
 //Input parsing for solving system of ODE
 
+#define FUNC_BEGIN_TIMER gt.BeginTimer(__func__);
+#define FUNC_END_TIMER   gt.EndTimer  (__func__);
+
 void parse(char* filename, double* x, double& t1, double* dt_list, 
 		int& problem_type, string& solver, bool& verification, bool& debug){
+	FUNC_BEGIN_TIMER;
+
 	GRVY_Input_Class iparse;
 
 	if (! iparse.Open(filename))
@@ -29,4 +34,5 @@ void parse(char* filename, double* x, double& t1, double* dt_list,
 	iparse.Read_Var_Vec("x0", x, dim);
 
 	if (debug)	iparse.Fdump("# ", "run.log");
+	FUNC_END_TIMER;
 }

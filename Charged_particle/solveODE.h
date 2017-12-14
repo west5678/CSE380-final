@@ -8,8 +8,20 @@
 #include <cstdio>
 #include <cstdlib>
 #include <grvy.h>
+#include <sys/time.h>
+#include <time.h>
+#include <unistd.h>
 
 typedef std::vector<double> state_type;
+
+//global variables
+extern std::ofstream out;	//ofstream for odeint output
+extern void (*observer)(const state_type&, const double);	//observer function choice (standard/debug)
+extern GRVY::GRVY_Timer_Class gt;
+
 void parse(char*, double*, double&, double*, int&, std::string&, bool&, bool&);
 void trajectory(const state_type&, state_type&, const double);
+void observer_standard(const state_type& , const double);
+void observer_debug(const state_type& , const double);
+void solve(std::string, state_type&, double, double);
 

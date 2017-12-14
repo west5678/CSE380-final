@@ -3,14 +3,9 @@
 using namespace boost::numeric::odeint;
 
 std::ofstream out;
+GRVY::GRVY_Timer_Class gt;
 
-void observer_standard( const state_type &x, const double t ){
-	out << t << "\t" << x[0] << "\t" << x[1] << "\t" << x[2] << std::endl;
-}
-
-void observer_debug( const state_type &x, const double t ){
-	out << t << "\t" << x[0] << "\t" << x[1] << "\t" << x[2] << "\t" << x[3] << "\t" << x[4] << "\t" << x[5] << std::endl;
-}
+void (*observer)(const state_type&, const double);
 
 void computeError( state_type x, state_type x_exact, double dt ){
 	double err = sqrt(pow(x[0]-x_exact[0], 2.0) + pow(x[1]-x_exact[1], 2.0)
@@ -23,20 +18,7 @@ void computeError( state_type x, state_type x_exact, double dt ){
 	
 }*/
 
-void solve(string solver, state_type& x, double t1, double dt){
-	if (solver == "RK4"){
-		runge_kutta4< state_type > stepper;
-		integrate_const( stepper, trajectory, x, 0.0, t1, dt, observer );
-	}
-	else if (solver == "RK5"){
-		runge_kutta_dopri5< state_type > stepper;
-		integrate_const( stepper, trajectory, x, 0.0, t1, dt, observer );
-	}
-	else if (solver == "RK8"){
-		kutta_fehlberg78< state_type > stepper;
-		integrate_const( stepper, trajectory, x, 0.0, t1, dt, observer );
-	}
-}
+
 
 int main(int argc, char** argv){
 	//initialization
@@ -53,7 +35,10 @@ int main(int argc, char** argv){
 	double t1;
 	bool verification;
 	bool debug;
+
+	gt.Init("ODE solver performance");
 	
+	gt.BeginTimer("Main Program");
 	//input parsing with GRVY
 	parse(argv[1], x0, t1, dt_list, problem_type, solver, verification, debug);
 	
@@ -62,7 +47,6 @@ int main(int argc, char** argv){
 	std::vector<double> x;	
 
 	//standard/debug
-	void (*observer)(const state_type&, const double);
 	if (debug)
 	{
 		observer = observer_debug;
@@ -87,6 +71,22 @@ int main(int argc, char** argv){
 	
 	//ODE solver
 	//solve(solver, time_steps, x0, x, t1);
+
+	for (auto dt : time_steps){
+		std::string filename = "data/" + solver + "_" + std::to_string(int(dt*1000)) + ".dat";
+		out.open(filename, std::fstream::out);
+		std::vector<double> temp (x0, x0+sizeof(x0)/sizeof(double));
+		x = temp;
+		solve(solver, x, t1, dt);
+		out.close();
+		if (verification)
+			computeError(x, x_exact, dt);
+	}
+	gt.EndTimer("Main Program");
+	gt.Finalize();
+	gt.Summarize();
+	gt.Reset();
+	/*
 	if (solver == "RK4")
 	{
 		runge_kutta4< state_type > stepper;
@@ -141,5 +141,6 @@ int main(int argc, char** argv){
 	else{
 		exit(1);
 	}
+	*/
 	return 0;
 }
