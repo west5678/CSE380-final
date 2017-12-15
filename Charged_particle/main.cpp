@@ -7,15 +7,26 @@ GRVY::GRVY_Timer_Class gt;
 
 void (*problem)(const state_type&, state_type&, const double);
 
-void (*observer)(const state_type&, const double);
-
+// observer for performance timing
 void observer_timer(const state_type& x, const double t){
 }
-//compute error for verification
-void computeError( state_type x, state_type x_exact, double dt ){
-	double err = sqrt(pow(x[0]-x_exact[0], 2.0) + pow(x[1]-x_exact[1], 2.0)
-			+ pow(x[2]-x_exact[2], 2.0));
-	std::cout << dt << ", " << err << std::endl;
+
+// compute error for verification
+void computeError( const int problem_type, const state_type x, const state_type x_exact, const double dt )
+{
+	//l2 error for charged particle trajectory
+	if ( problem_type == 1)
+	{
+		double err = sqrt(pow(x[0]-x_exact[0], 2.0) + pow(x[1]-x_exact[1], 2.0)
+				+ pow(x[2]-x_exact[2], 2.0));
+		std::cout << dt << "\t" << err << std::endl;
+	}
+	//error for x'=-x
+	else if (problem_type == 0)
+	{
+		double err = std::abs(x[0]-x_exact[0]);
+		std::cout << dt << "\t" << err << std::endl;
+	}
 }
 
 
@@ -34,6 +45,10 @@ int main(int argc, char** argv){
 	double t1;
 	bool verification;
 	bool debug;
+	bool timing_flag;
+	iparse.Read_Var("Timing", &timing_flag, false);
+	if (timing_flag)
+		std::cout << "timing" << std::endl;
 
 	gt.Init("ODE solver performance");
 	
@@ -54,21 +69,8 @@ int main(int argc, char** argv){
 	{
 		problem = trajectory;
 	}
-	
-	//standard/debug
-	if (debug)
-	{
-		observer = observer_debug;
-	}
-	else
-	{
-		observer = observer_standard;
-	}
 
-	if (n_sizes == 1)
-		observer = observer_timer;
-
-	//Verification
+	//Verification - compute exact solution
 	state_type x_exact;
 	if (verification){
 		std::cout << "Verification On" << std::endl;
@@ -77,7 +79,6 @@ int main(int argc, char** argv){
 		state_type temp_exact (x0, x0 + sizeof(x0)/sizeof(double));
 		x_exact = temp_exact;
 		integrate_const(stepper, problem, x_exact, 0.0, t1, 1e-5);
-		std::cout << x_exact[0] << "\t" << x_exact[1] << "\t" << x_exact[2] << std::endl;
 	}
 	
 	
@@ -87,10 +88,10 @@ int main(int argc, char** argv){
 		out.open(filename, std::fstream::out);
 		std::vector<double> temp (x0, x0+sizeof(x0)/sizeof(double));
 		x = temp;
-		solve(solver, x, t1, dt);
+		solve(timing_flag, solver, x, t1, dt);
 		out.close();
 		if (verification)
-			computeError(x, x_exact, dt);
+			computeError(problem_type, x, x_exact, dt);
 	}
 	gt.EndTimer("Main Program");
 	gt.Finalize();

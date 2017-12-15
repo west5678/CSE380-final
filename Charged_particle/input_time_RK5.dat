@@ -7,7 +7,7 @@ Solver='RK5'
 # Number of step sizes
 n_sizes=1
 # Step sizes
-dt='1.e-6'
+dt='1.e-8'
 
 # Dimension of the system
 dim=6
@@ -20,5 +20,8 @@ t1=4.096
 # Verification mode
 Verification=false
 
-#debug mode
+# debug mode
 Debug=false
+
+# Performance timing
+Timing = true

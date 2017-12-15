@@ -1,18 +1,18 @@
 # problem number: 0 for simple ODE, 1 for Charged particle in a vertical field
-Problem=1
+Problem=0
 
 # solution methods: RK4 for 4th order Runge-Kutta, RK5 for explicit Runge-Kutta-Dopri5, RK8 for Runge-Kutta-fehlberg78
-Solver='RK8'
+Solver='Euler_custom'
 
 # Number of step sizes
-n_sizes=10
+n_sizes=7
 # Step sizes
-dt='1.024 0.512 0.256 0.128 0.064 0.032 0.016 0.008 0.004 0.002 0.001'
+dt='0.064 0.032 0.016 0.008 0.004 0.002 0.001'
 
 # Dimension of the system
-dim=6
+dim=1
 # Initial condition
-x0='0.0 0.0 0.0 20.0 0.0 2.0'
+x0='1.0'
 
 # Upper bound of integration
 t1=4.096

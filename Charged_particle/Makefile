@@ -4,7 +4,7 @@ SRC := $(wildcard *.cpp)
 OBJ := $(patsubst %.cpp,%.o,$(SRC))
 # Options
 CC := icc
-CXXFLAGS := -g -std=c++11 -I$$TACC_BOOST_INC -I$$TACC_GRVY_INC
+CXXFLAGS := -fp-model precise -std=c++11 -I$$TACC_BOOST_INC -I$$TACC_GRVY_INC
 LDFLAGS := -L$$TACC_BOOST_LIB -L$$TACC_GRVY_LIB
 LDLIBS := -lgrvy
 # Rules
